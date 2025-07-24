@@ -6,14 +6,14 @@ sidebar_position: 3
 
 Complete API documentation for AUCO's main classes and methods.
 
-## StarknetIndexer Class
+## `StarknetIndexer` Class
 
 The main class for indexing Starknet events.
 
 ### Constructor
 
 ```typescript
-new StarknetIndexer(config: IndexerConfig)
+const indexer = new StarknetIndexer(config: IndexerConfig)
 ```
 
 ### Configuration
@@ -41,12 +41,6 @@ The `database` configuration supports multiple database types:
     type: "postgres",
     config: {
       connectionString: "postgresql://user:password@localhost:5432/mydb",
-      // OR use individual options:
-      host: "localhost",
-      port: 5432,
-      database: "mydb",
-      user: "username",
-      password: "password"
     }
   }
 }
@@ -80,13 +74,7 @@ import Database from "better-sqlite3";
   database: {
     type: "mysql",
     config: {
-      connectionString: "mysql://user:password@localhost:3306/mydb",
-      // OR use individual options:
-      host: "localhost",
-      port: 3306,
-      database: "mydb",
-      user: "username",
-      password: "password"
+      connectionString: "mysql://user:password@localhost:3306/mydb"
     }
   }
 }
@@ -95,6 +83,8 @@ import Database from "better-sqlite3";
 </details>
 
 #### Log Levels
+
+Log levels can be optionally pass in to indicate the severity that the logs should show.
 
 ```typescript
 enum LogLevel {
@@ -107,12 +97,14 @@ enum LogLevel {
 
 ## Core Methods
 
-### indexer.start()
+These methods are members of the `StarknetIndexer` class. They are not static.
+
+### `start()`
 
 Starts the indexer and begins processing events.
 
 ```typescript
-indexer.start(): Promise<void>
+StarknetIndexer.start(): Promise<void>
 ```
 
 :::info
@@ -126,12 +118,12 @@ await indexer.start();
 console.log("Indexer started successfully");
 ```
 
-### indexer.stop()
+### `stop()`
 
 Gracefully stops the indexer and closes all connections.
 
 ```typescript
-indexer.stop(): Promise<void>
+StarknetIndexer.stop(): Promise<void>
 ```
 
 :::warning Graceful Shutdown
@@ -148,15 +140,15 @@ process.on("SIGINT", async () => {
 });
 ```
 
-### indexer.onEvent()
+### `onEvent()`
 
 Registers an event handler for a specific contract event.
 
 ```typescript
-indexer.onEvent(config: EventHandlerConfig): void
+StarknetIndexer.onEvent(config: EventHandlerConfig): void
 ```
 
-#### EventHandlerConfig
+#### `EventHandlerConfig`
 
 | Property          | Type           | Required | Description                  |
 | ----------------- | -------------- | -------- | ---------------------------- |
@@ -165,21 +157,21 @@ indexer.onEvent(config: EventHandlerConfig): void
 | `eventName`       | `string`       | ✅       | Event name to listen for     |
 | `handler`         | `EventHandler` | ✅       | Function to handle the event |
 
-#### EventHandler Function
+#### `EventHandler` Function
 
 ```typescript
 type EventHandler = (
-  event: ParsedEvent,
-  client: DatabaseClient,
+  event: StarknetEvent,
+  client: BaseDbHandler,
   indexer: StarknetIndexer,
 ) => Promise<void>;
 ```
 
 **Parameters:**
 
-- `event`: The parsed event data
-- `client`: Database client for custom queries
-- `indexer`: Reference to the indexer instance
+- `event`: The parsed event data with [`StarknetEvent`](#starknetevent) type
+- `client`: Database client for custom queries, this is of the [`BaseDbHandler`](#basedbhandler) type which helps you execute queries on your database of choice.
+- `indexer`: Reference to the indexer instance, the [`StarknetIndexer`](#starknetindexer-class) instance
 
 **Example:**
 
@@ -208,12 +200,12 @@ indexer.onEvent({
 You can register multiple event handlers for different contracts and events by calling `onEvent()` multiple times.
 :::
 
-### indexer.onReorg()
+### `onReorg()`
 
 Registers a handler for blockchain reorganizations.
 
 ```typescript
-indexer.onReorg(config: ReorgHandlerConfig): void
+StarknetIndexer.onReorg(config: ReorgHandlerConfig): void
 ```
 
 #### ReorgHandlerConfig
@@ -227,6 +219,8 @@ indexer.onReorg(config: ReorgHandlerConfig): void
 ```typescript
 type ReorgHandler = (forkedBlock: Block) => Promise<void>;
 ```
+
+The `forkedBlock` parameter is of the [`Block`](#block) type
 
 **Example:**
 
@@ -252,12 +246,12 @@ The indexer automatically handles database rollbacks for non-canonical blocks, b
 
 ## Types
 
-### ParsedEvent
+### `StarknetEvent`
 
 The event object passed to event handlers:
 
 ```typescript
-interface ParsedEvent {
+interface StarknetEvent {
   data: Record<string, any>; // Decoded event data
   keys: string[]; // Event keys
   from_address: string; // Contract address
@@ -265,10 +259,11 @@ interface ParsedEvent {
   block_number: number; // Block number
   transaction_hash: string; // Transaction hash
   event_index: number; // Event index in transaction
+  parsed: any; // Parsed event, this will follow the ABI and will be type-safe.
 }
 ```
 
-### Block
+### `Block`
 
 The block object passed to reorg handlers:
 
@@ -278,6 +273,15 @@ interface Block {
   block_hash: string;
   parent_hash: string;
   timestamp: number;
-  // ... other block properties
+}
+```
+
+### `BaseDbHandler`
+
+This types may contain other functions, but you would only need the following function on your handlers.
+
+```typescript
+export abstract class BaseDbHandler {
+  abstract query(query: string, params: any[]): Promise<any>;
 }
 ```

@@ -43,6 +43,8 @@ indexer.start();
 
 ## Database Examples
 
+Other than SQLite, you would have to have your database setup and readily accepting connections.
+
 ### PostgreSQL
 
 <details>
@@ -64,12 +66,6 @@ const indexer = new StarknetIndexer({
   },
   logLevel: LogLevel.INFO,
 });
-```
-
-**Run the example:**
-
-```bash
-npx ts-node example/index.ts
 ```
 
 </details>
@@ -99,12 +95,6 @@ const indexer = new StarknetIndexer({
 });
 ```
 
-**Run the example:**
-
-```bash
-npx ts-node example/sqlite.ts
-```
-
 </details>
 
 ### MySQL
@@ -131,18 +121,10 @@ const indexer = new StarknetIndexer({
 });
 ```
 
-**Run the example:**
-
-```bash
-npx ts-node example/mysql.ts
-```
-
 </details>
 
 ## Next Steps
 
 - Use the [ABI Downloader CLI](./abi-downloader.md) to download contract ABIs
-- Learn about [Configuration Options](./configuration/index.md)
 - Explore [API Reference](./api-reference/index.md)
-- Set up [Database Configuration](./configuration/database.md)
 - Handle [Chain Reorganizations](./api-reference/reorg-handling.md)
