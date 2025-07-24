@@ -4,11 +4,6 @@ sidebar_position: 1
 
 # Introduction
 
-[![CI](https://github.com/Quantum3-Labs/auco/actions/workflows/ci.yaml/badge.svg)](https://github.com/Quantum3-Labs/auco/actions/workflows/ci.yaml)
-[![npm version](https://badge.fury.io/js/auco.svg)](https://badge.fury.io/js/auco)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
 **Auco** is a high-performance TypeScript/Node.js indexer for Starknet events, supporting PostgreSQL, SQLite, MySQL, and real-time event handling via WebSocket and RPC.
 
 ## Key Features

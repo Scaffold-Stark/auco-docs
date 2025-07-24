@@ -42,8 +42,8 @@ import { StarknetIndexer, LogLevel } from "auco";
 
 const indexer = new StarknetIndexer({
   // Required: Node endpoints
-  rpcNodeUrl: "https://starknet-mainnet.infura.io/v3/YOUR_KEY",
-  wsNodeUrl: "wss://starknet-mainnet.infura.io/ws/v3/YOUR_KEY",
+  rpcNodeUrl: "https://starknet-sepolia-rpc.publicnode.com",
+  wsNodeUrl: "wss://starknet-sepolia-rpc.publicnode.com",
 
   // Required: Database configuration
   database: {
