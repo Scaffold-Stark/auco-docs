@@ -140,6 +140,16 @@ process.on("SIGINT", async () => {
 });
 ```
 
+### `healthCheck()`
+
+Performs a connectivity check to the Database, the Websocket Instance, and the RPC Server.
+
+```ts
+StarknetIndexer.healthCheck(): { ws: boolean, rpc: boolean, database: boolean }
+```
+
+Each boolean should represent the status of each connection. `true` for connected, `false` for unhealthy connection.
+
 ### `onEvent()`
 
 Registers an event handler for a specific contract event.
