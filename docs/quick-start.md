@@ -127,4 +127,4 @@ const indexer = new StarknetIndexer({
 
 - Use the [ABI Downloader CLI](./abi-downloader.md) to download contract ABIs
 - Explore [API Reference](./api-reference/index.md)
-- Handle [Chain Reorganizations](./api-reference/reorg-handling.md)
+- Handle [Chain Reorganizations](./api-reference/index.md#onreorg)
